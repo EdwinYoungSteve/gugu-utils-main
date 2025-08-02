@@ -1,0 +1,21 @@
+[
+  {
+    "modid": "gugu-utils",
+    "name": "GuGu Utils",
+    "description": "A Util Mod for Mod pack of Dove's Home",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "WarmthDawn",
+      "yuedu233_",
+      "Month_Hare"
+    ],
+    "credits": "The Forge and FML guys",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+    ]
+  }
+]
