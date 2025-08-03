@@ -121,6 +121,7 @@ dependencies {
 	deobfCompile "curse.maven:immersiveengineering-${immersive_engineering}"
 	deobfCompile "curse.maven:immersivepetroleum-${immersive_petroleum}"
 	deobfCompile "curse.maven:extrautilities-${extra_utilities}"
+    deobfCompile "curse.maven:modular-machinery-community-edition-addons-1236022:6806329"
 	
     deobfCompile("codechicken:CodeChickenLib:${mc_version}-${ccl_version}:universal") {
         exclude group: "mezz.jei"

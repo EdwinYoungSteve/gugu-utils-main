@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+FMLCorePlugin: com.warmthdawn.mod.gugu_utils.asm.GuGuUtilsCorePlugin
+FMLCorePluginContainsFMLMod: true
