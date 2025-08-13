@@ -36,7 +36,7 @@ public class SubTileArcaneRoseModified extends SubTileGenerating {
 
         List<EntityXPOrb> orbs = supertile.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(supertile.getPos().add(-ORBS_RANGE, -ORBS_RANGE, -ORBS_RANGE), supertile.getPos().add(ORBS_RANGE + 1, ORBS_RANGE + 1, ORBS_RANGE + 1)));
         for (EntityXPOrb orb : orbs) {
-            mana = Math.max(getMaxMana(), (int) (mana + orb.getXpValue() * 35 * efficiency));
+            mana = Math.min(getMaxMana(), (int) (mana + orb.getXpValue() * 35 * efficiency));
             orb.setDead();
             return;
         }
@@ -48,7 +48,7 @@ public class SubTileArcaneRoseModified extends SubTileGenerating {
         for (EntityPlayer player : players)
             if (ExperienceHelper.getPlayerXP(player) >= 1 && player.onGround) {
                 ExperienceHelper.drainPlayerXP(player, 1);
-                mana += 50 * efficiency;
+                mana = Math.min(getMaxMana(), (int) (mana + 50 * efficiency));
                 return;
             }
 
