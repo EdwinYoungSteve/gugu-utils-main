@@ -27,20 +27,25 @@ public class SubTileEntropinnyumModified extends SubTileGenerating {
         super.onUpdate();
 
         if (!supertile.getWorld().isRemote && mana == 0) {
-            List<EntityTNTPrimed> tnts = supertile.getWorld().getEntitiesWithinAABB(EntityTNTPrimed.class, new AxisAlignedBB(supertile.getPos().add(-RANGE, -RANGE, -RANGE), supertile.getPos().add(RANGE + 1, RANGE + 1, RANGE + 1)));
-            for (EntityTNTPrimed tnt : tnts) {
-                if (tnt.getFuse() == 1 && !tnt.isDead && !supertile.getWorld().getBlockState(new BlockPos(tnt)).getMaterial().isLiquid()) {
+            // 检测所有继承了EntityTNTPrimed的实体，而不仅仅是原版TNT
+            List<Entity> allEntities = supertile.getWorld().getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(supertile.getPos().add(-RANGE, -RANGE, -RANGE), supertile.getPos().add(RANGE + 1, RANGE + 1, RANGE + 1)));
+            for (Entity entity : allEntities) {
+                // 检查是否是TNT类型的实体（包括继承的子类）
+                if (entity instanceof EntityTNTPrimed) {
+                    EntityTNTPrimed tnt = (EntityTNTPrimed) entity;
+                    if (tnt.getFuse() == 1 && !tnt.isDead && !supertile.getWorld().getBlockState(new BlockPos(tnt)).getMaterial().isLiquid()) {
 
-                    boolean unethical = tnt.getTags().contains(TAG_UNETHICAL);
+                        boolean unethical = tnt.getTags().contains(TAG_UNETHICAL);
 
-                    SoundEvent sound = unethical ? SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE : SoundEvents.ENTITY_GENERIC_EXPLODE;
-                    tnt.playSound(sound, 0.2F, (1F + (getWorld().rand.nextFloat() - getWorld().rand.nextFloat()) * 0.2F) * 0.7F);
-                    tnt.setDead();
-                    addMana(unethical ? 3 : getMaxMana());
+                        SoundEvent sound = unethical ? SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE : SoundEvents.ENTITY_GENERIC_EXPLODE;
+                        tnt.playSound(sound, 0.2F, (1F + (getWorld().rand.nextFloat() - getWorld().rand.nextFloat()) * 0.2F) * 0.7F);
+                        tnt.setDead();
+                        addMana(unethical ? 3 : getMaxMana());
 
-                    sync();
-                    getWorld().addBlockEvent(getPos(), supertile.getBlockType(), unethical ? ANGRY_EFFECT_EVENT : EXPLODE_EFFECT_EVENT, tnt.getEntityId());
-                    break;
+                        sync();
+                        getWorld().addBlockEvent(getPos(), supertile.getBlockType(), unethical ? ANGRY_EFFECT_EVENT : EXPLODE_EFFECT_EVENT, tnt.getEntityId());
+                        break;
+                    }
                 }
             }
         }

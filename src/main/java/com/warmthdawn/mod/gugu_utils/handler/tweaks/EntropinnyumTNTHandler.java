@@ -58,6 +58,7 @@ public class EntropinnyumTNTHandler {
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent evt) {
         if (!evt.getWorld().isRemote) {
+            // 检查所有继承了EntityTNTPrimed的实体，而不仅仅是原版TNT
             if (evt.getEntity() instanceof EntityTNTPrimed && isTNTUnethical(evt.getEntity())) {
                 evt.getEntity().getTags().add(SubTileEntropinnyumModified.TAG_UNETHICAL);
             }
