@@ -58,10 +58,15 @@ public class TileEnergyOutputPort extends CommonMMTile implements ITickable, Mac
     @Override
     public void readNBT(NBTTagCompound compound) {
         super.readNBT(compound);
-        if (compound.hasKey(TAG_STATE))
+        if (compound.hasKey(TAG_STATE)) {
             state = OutputPortState.VALUES[compound.getInteger(TAG_STATE)];
-        if (world.isRemote && compound.hasKey(TAG_ENERGY_RECIEVE))
-            this.clientCurrentRecieve = compound.getInteger(TAG_ENERGY_RECIEVE);
+        }
+        // 在区块反序列化阶段，TileEntity 的 world 可能尚未注入，避免直接访问 world.isRemote 造成 NPE
+        if (compound.hasKey(TAG_ENERGY_RECIEVE)) {
+            if (this.world != null && this.world.isRemote) {
+                this.clientCurrentRecieve = compound.getInteger(TAG_ENERGY_RECIEVE);
+            }
+        }
     }
 
     @Override
