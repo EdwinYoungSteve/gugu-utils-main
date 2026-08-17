@@ -85,6 +85,11 @@ public class RequirementAura extends RequirementConsumePerTick<Integer, Requirem
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            aura = IResourceToken.multiplyClamped(aura, parallelism);
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_AURA;
         }

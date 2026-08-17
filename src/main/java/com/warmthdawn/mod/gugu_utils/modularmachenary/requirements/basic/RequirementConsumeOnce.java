@@ -3,6 +3,7 @@ package com.warmthdawn.mod.gugu_utils.modularmachenary.requirements.basic;
 import com.google.common.collect.Lists;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.requirements.types.RequirementTypeAdapter;
 import hellfirepvp.modularmachinery.common.crafting.helper.ComponentOutputRestrictor;
+import hellfirepvp.modularmachinery.common.crafting.helper.ComponentRequirement;
 import hellfirepvp.modularmachinery.common.crafting.helper.CraftCheck;
 import hellfirepvp.modularmachinery.common.crafting.helper.ProcessingComponent;
 import hellfirepvp.modularmachinery.common.crafting.helper.RecipeCraftingContext;
@@ -13,13 +14,156 @@ import hellfirepvp.modularmachinery.common.util.ResultChance;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public abstract class RequirementConsumeOnce<T, V extends IResourceToken> extends ComponentRequirementAdapter<T> {
+public abstract class RequirementConsumeOnce<T, V extends IResourceToken> extends ComponentRequirementAdapter<T>
+        implements ComponentRequirement.Parallelizable {
 
     V checkToken;
     V outputToken;
+    protected int parallelism = 1;
+    protected boolean parallelizeUnaffected = false;
 
     public RequirementConsumeOnce(RequirementTypeAdapter<T> componentType, IOType actionType) {
         super(componentType, actionType);
+    }
+
+    @Override
+    protected ComponentRequirementAdapter<T> postClone(ComponentRequirementAdapter<T> clone) {
+        if (clone instanceof RequirementConsumeOnce) {
+            RequirementConsumeOnce<?, ?> parallelClone = (RequirementConsumeOnce<?, ?>) clone;
+            parallelClone.parallelizeUnaffected = this.parallelizeUnaffected;
+            parallelClone.parallelism = this.parallelizeUnaffected ? 1 : this.parallelism;
+        }
+        return clone;
+    }
+
+    private V createToken(RecipeCraftingContext context, int requestedParallelism) {
+        V token = emitConsumptionToken(context);
+        token.applyModifiers(context.getModifiers(getRequirementType()), getRequirementType(), getActionType());
+        if (!parallelizeUnaffected) {
+            token.applyParallelism(Math.max(1, requestedParallelism));
+        }
+        return token;
+    }
+
+    private boolean canSatisfy(List<ProcessingComponent<?>> components,
+                               RecipeCraftingContext context,
+                               int requestedParallelism) {
+        if (ParallelRequirementSupport.isOutputCheckIgnored(this)) {
+            return true;
+        }
+        V token = createToken(context, requestedParallelism);
+        return ParallelRequirementSupport.process(components, token, getActionType(), false);
+    }
+
+    @Nonnull
+    @Override
+    public List<ProcessingComponent<?>> copyComponents(List<ProcessingComponent<?>> components) {
+        return ParallelRequirementSupport.copyComponents(components);
+    }
+
+    @Nonnull
+    @Override
+    public CraftCheck canStartCrafting(List<ProcessingComponent<?>> components, RecipeCraftingContext context) {
+        if (ParallelRequirementSupport.isOutputCheckIgnored(this)) {
+            return CraftCheck.success();
+        }
+        checkToken = createToken(context, parallelism);
+        if (ParallelRequirementSupport.process(components, checkToken, getActionType(), false)) {
+            return CraftCheck.success();
+        }
+        return CraftCheck.failure(checkToken.getError() == null
+                ? (getActionType() == IOType.INPUT ? getMissingInput() : getMissingOutput())
+                : checkToken.getError());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void startCrafting(List<ProcessingComponent<?>> components,
+                              RecipeCraftingContext context,
+                              ResultChance chance) {
+        outputToken = createToken(context, parallelism);
+        for (ProcessingComponent<?> component : components) {
+            Object provided = component.getProvidedComponent();
+            if (provided instanceof ICraftingResourceHolder) {
+                ((ICraftingResourceHolder<V>) provided).startCrafting(outputToken);
+            }
+        }
+        if (getActionType() == IOType.INPUT) {
+            ParallelRequirementSupport.process(components, outputToken, getActionType(), true);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void finishCrafting(List<ProcessingComponent<?>> components,
+                               RecipeCraftingContext context,
+                               ResultChance chance) {
+        outputToken = createToken(context, parallelism);
+        if (getActionType() == IOType.OUTPUT) {
+            ParallelRequirementSupport.process(components, outputToken, getActionType(), true);
+        }
+        for (ProcessingComponent<?> component : components) {
+            Object provided = component.getProvidedComponent();
+            if (provided instanceof ICraftingResourceHolder) {
+                ((ICraftingResourceHolder<V>) provided).finishCrafting(outputToken);
+            }
+        }
+    }
+
+    @Override
+    public int getMaxParallelism(List<ProcessingComponent<?>> components,
+                                 RecipeCraftingContext context,
+                                 int maxParallelism) {
+        if (maxParallelism <= 0) {
+            return 0;
+        }
+        if (parallelizeUnaffected || ParallelRequirementSupport.isOutputCheckIgnored(this)) {
+            return canSatisfy(components, context, 1) ? maxParallelism : 0;
+        }
+
+        int low = 0;
+        int high = maxParallelism;
+        while (low < high) {
+            int middle = low + (high - low + 1) / 2;
+            if (canSatisfy(components, context, middle)) {
+                low = middle;
+            } else {
+                high = middle - 1;
+            }
+        }
+        return low;
+    }
+
+    /** Compatibility with MMCE releases which used the single-component API. */
+    public int maxParallelism(ProcessingComponent<?> component,
+                              RecipeCraftingContext context,
+                              int maxParallelism) {
+        return getMaxParallelism(java.util.Collections.singletonList(component), context, maxParallelism);
+    }
+
+    @Override
+    public int getParallelism() {
+        return parallelism;
+    }
+
+    @Override
+    public void setParallelism(int parallelism) {
+        if (!parallelizeUnaffected) {
+            this.parallelism = Math.max(1, parallelism);
+        }
+    }
+
+    @Override
+    public boolean isParallelizeUnaffected() {
+        return parallelizeUnaffected;
+    }
+
+    @Override
+    public void setParallelizeUnaffected(boolean unaffected) {
+        this.parallelizeUnaffected = unaffected;
+        if (unaffected) {
+            this.parallelism = 1;
+        }
     }
 
     @Override
@@ -131,10 +275,8 @@ public abstract class RequirementConsumeOnce<T, V extends IResourceToken> extend
 
     @Override
     public void startRequirementCheck(ResultChance chance, RecipeCraftingContext context) {
-        checkToken = emitConsumptionToken(context);
-        checkToken.applyModifiers(context.getModifiers(getRequirementType()), getRequirementType(), getActionType());
-        outputToken = emitConsumptionToken(context);
-        outputToken.applyModifiers(context.getModifiers(getRequirementType()), getRequirementType(), getActionType());
+        checkToken = createToken(context, parallelism);
+        outputToken = createToken(context, parallelism);
     }
 
     @Override

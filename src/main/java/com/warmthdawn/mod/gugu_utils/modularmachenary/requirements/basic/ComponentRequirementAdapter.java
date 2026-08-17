@@ -20,14 +20,18 @@ public abstract class ComponentRequirementAdapter<T> extends ComponentRequiremen
 
     public abstract ComponentRequirementAdapter<T> deepCloneModified(List<RecipeModifier> modifiers);
 
+    protected ComponentRequirementAdapter<T> postClone(ComponentRequirementAdapter<T> clone) {
+        return clone;
+    }
+
     @Override
     public final ComponentRequirement<T, RequirementType<T, ? extends ComponentRequirementAdapter<T>>> deepCopy() {
-        return deepClone();
+        return postClone(deepClone());
     }
 
     @Override
     public final ComponentRequirement<T, RequirementType<T, ? extends ComponentRequirementAdapter<T>>> deepCopyModified(List<RecipeModifier> list) {
-        return deepCloneModified(list);
+        return postClone(deepCloneModified(list));
     }
 
     public abstract static class PerTick<T> extends ComponentRequirement.PerTick<T, RequirementType<T, ? extends ComponentRequirementAdapter.PerTick<T>>> {
@@ -39,12 +43,16 @@ public abstract class ComponentRequirementAdapter<T> extends ComponentRequiremen
 
         @Override
         public final ComponentRequirement<T, RequirementType<T, ? extends ComponentRequirementAdapter.PerTick<T>>> deepCopy() {
-            return deepClone();
+            return postClone(deepClone());
         }
 
         @Override
         public final ComponentRequirement<T, RequirementType<T, ? extends ComponentRequirementAdapter.PerTick<T>>> deepCopyModified(List<RecipeModifier> list) {
-            return deepCloneModified(list);
+            return postClone(deepCloneModified(list));
+        }
+
+        protected ComponentRequirementAdapter.PerTick<T> postClone(ComponentRequirementAdapter.PerTick<T> clone) {
+            return clone;
         }
 
         public abstract ComponentRequirementAdapter.PerTick<T> deepClone();

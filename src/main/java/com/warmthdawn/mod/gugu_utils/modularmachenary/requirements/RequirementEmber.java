@@ -73,6 +73,15 @@ public class RequirementEmber extends RequirementConsumeOnce<Double, Requirement
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            if (ember <= 0 || parallelism <= 0) {
+                ember = 0;
+            } else {
+                ember = Math.min(Double.MAX_VALUE, ember * parallelism);
+            }
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_EMBER;
         }

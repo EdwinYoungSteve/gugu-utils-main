@@ -80,6 +80,11 @@ public class RequirementMana extends RequirementConsumeOnce<Integer, Requirement
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            mana = IResourceToken.multiplyClamped(mana, parallelism);
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_MANA;
         }

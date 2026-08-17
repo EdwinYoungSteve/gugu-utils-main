@@ -19,9 +19,6 @@ version = mod_version
 group = 'com.warmthdawn.mod.gugu-utils' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'gugu-utils'
 
-def build_number = getBuildNumber()
-version += "." + build_number
-
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -98,7 +95,9 @@ dependencies {
 
     deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}"
     deobfCompile "com.github.mcjty:mcjtylib:${mc_short}-${mcjtylib_version}"
-    deobfCompile "hellfirepvp.modularmachinery:modularmachinery:${mc_version}-${modularmachinery_version}"
+    // MMCE keeps the original Modular Machinery packages, but adds the
+    // Parallelizable requirement API used by GuGu Utils' custom IO types.
+    deobfCompile "curse.maven:modularmachinery-community-edition-${modularmachinery_ce_project}:${modularmachinery_ce_file}"
 
     deobfCompile "vazkii.botania:Botania:${botania_version}"
     deobfCompile "vazkii.psi:Psi:${psi_version}"

@@ -98,6 +98,11 @@ public class RequirementHotAir extends RequirementConsumePerTick<Integer, Requir
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            heat = IResourceToken.multiplyClamped(heat, parallelism);
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_HOT_AIR;
         }

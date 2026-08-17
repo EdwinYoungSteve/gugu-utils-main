@@ -28,6 +28,9 @@ public class RequirementStarlight extends RequirementConsumePerTick<Integer, Req
         super((RequirementTypeAdapter<Integer>) MMRequirements.REQUIREMENT_TYPE_STARLIGHT, actionType);
         this.starlight = starlight;
         this.constellation = constellation;
+        // Starlight is a constant environmental value. It participates in
+        // MMCE parallel recipes, but its threshold must never be multiplied.
+        setParallelizeUnaffected(true);
     }
 
     public int getStarlight() {
@@ -109,6 +112,11 @@ public class RequirementStarlight extends RequirementConsumePerTick<Integer, Req
         @Override
         public void applyModifiers(Collection<RecipeModifier> modifiers, RequirementType type, IOType ioType, float durationMultiplier) {
             starlight = (int) RecipeModifier.applyModifiers(modifiers, type, ioType, starlight, false);
+        }
+
+        @Override
+        public void applyParallelism(int parallelism) {
+            // Constant threshold: intentionally unaffected by parallelism.
         }
 
         @Override

@@ -101,6 +101,11 @@ public class RequirementCompressedAir extends RequirementConsumeOnce<Integer, Re
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            air = IResourceToken.multiplyClamped(air, parallelism);
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_COMPRESSED_AIR;
         }

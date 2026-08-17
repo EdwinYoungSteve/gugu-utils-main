@@ -78,6 +78,11 @@ public class RequirementEnvironment extends RequirementConsumePerTick<Environmen
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            // A world condition has no numeric amount to multiply.
+        }
+
+        @Override
         public String getError() {
             return error;
         }

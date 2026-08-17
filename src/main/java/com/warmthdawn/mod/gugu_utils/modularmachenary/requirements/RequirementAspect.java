@@ -88,6 +88,11 @@ public class RequirementAspect extends RequirementConsumePerTick<Integer, Requir
         }
 
         @Override
+        public void applyParallelism(int parallelism) {
+            amount = IResourceToken.multiplyClamped(amount, parallelism);
+        }
+
+        @Override
         public String getKey() {
             return Constants.STRING_RESOURCE_ASPECT;
         }

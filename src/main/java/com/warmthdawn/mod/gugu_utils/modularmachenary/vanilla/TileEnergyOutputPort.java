@@ -7,7 +7,7 @@ import com.warmthdawn.mod.gugu_utils.network.PacketParticles;
 import hellfirepvp.modularmachinery.common.machine.IOType;
 import hellfirepvp.modularmachinery.common.machine.MachineComponent;
 import hellfirepvp.modularmachinery.common.tiles.base.MachineComponentTile;
-import hellfirepvp.modularmachinery.common.util.IEnergyHandler;
+import hellfirepvp.modularmachinery.common.util.IEnergyHandlerAsync;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -115,7 +115,7 @@ public class TileEnergyOutputPort extends CommonMMTile implements ITickable, Mac
     public MachineComponent provideComponent() {
         return new MachineComponent.EnergyHatch(IOType.OUTPUT) {
             @Override
-            public IEnergyHandler getContainerProvider() {
+            public IEnergyHandlerAsync getContainerProvider() {
                 return TileEnergyOutputPort.this.storage;
             }
         };
@@ -225,7 +225,7 @@ public class TileEnergyOutputPort extends CommonMMTile implements ITickable, Mac
     }
 
 
-    public static class EnergyStorage implements IEnergyStorage, IEnergyHandler {
+    public static class EnergyStorage implements IEnergyStorage, IEnergyHandlerAsync {
         private final Function<Integer, Integer> energyConsumer;
         private int currentEnergy = 0;
         private int currentRecieve = 0;
@@ -268,6 +268,30 @@ public class TileEnergyOutputPort extends CommonMMTile implements ITickable, Mac
         @Override
         public long getRemainingCapacity() {
             return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean extractEnergy(long energy) {
+            if (energy <= 0) {
+                return true;
+            }
+            int extracted = (int) Math.min(Math.min(energy, Integer.MAX_VALUE), currentEnergy);
+            currentEnergy -= extracted;
+            return extracted == energy;
+        }
+
+        @Override
+        public boolean receiveEnergy(long energy) {
+            if (energy <= 0) {
+                return true;
+            }
+            long remaining = energy;
+            while (remaining > 0) {
+                int batch = (int) Math.min(remaining, Integer.MAX_VALUE - 1L);
+                setCurrentEnergy(batch);
+                remaining -= batch;
+            }
+            return true;
         }
 
         @Override
