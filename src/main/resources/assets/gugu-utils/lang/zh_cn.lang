@@ -27,6 +27,7 @@ tile.gugu-utils.emberinputhatch.extreme.name=极限灰烬能量输入仓
 
 tile.gugu-utils.environmenthatch.name=环境传感器
 tile.gugu-utils.aurainputhatch.name=灵气输入仓
+tile.gugu-utils.auraoutputhatch.name=灵气输出仓
 tile.gugu-utils.energyoutputport.name=能源输出端口
 tile.gugu-utils.aspecthatch.input.name=源质输入仓
 tile.gugu-utils.aspecthatch.output.name=源质输出仓
@@ -93,6 +94,7 @@ component.missing.gugu-utils:mana.output=缺少魔力输出仓！
 component.missing.gugu-utils:starlight.input=缺少星辉输入仓！
 component.missing.gugu-utils:environment.input=缺少环境传感器！
 component.missing.gugu-utils:aura.input=缺少灵气输入仓！
+component.missing.gugu-utils:aura.output=缺少灵气输出仓！
 component.missing.gugu-utils:pressurehatch.input=缺少压缩空气输入阀门！
 component.missing.gugu-utils:pressurehatch.output=缺少压缩空气输出阀门！
 
@@ -102,6 +104,7 @@ craftcheck.failure.gugu-utils:starlight.input=输入星能不足！
 craftcheck.failure.gugu-utils:starlight.input.wrong_constellation=输入星能的星座不正确！
 craftcheck.failure.gugu-utils:ember.input=余烬能量不足！
 craftcheck.failure.gugu-utils:aura.input=输入灵气不足！
+craftcheck.failure.gugu-utils:aura.output.space=没有足够的空间用于灵气输出！
 craftcheck.failure.gugu-utils:compressed_air.input=缺少压缩空气输入！
 craftcheck.failure.gugu-utils:compressed_air.input.not_enough_pressure=气压不足！
 craftcheck.failure.gugu-utils:compressed_air.input.not_enough_vacuum=不够真空！

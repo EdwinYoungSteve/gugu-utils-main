@@ -63,6 +63,10 @@ public class Constants {
     public static final ResourceLocation RESOURCE_AURAHATCH_INPUT = new ResourceLocation(GuGuUtils.MODID, NAME_AURAHATCH_INPUT);
     public static final String STRING_RESOURCE_AURAHATCH_INPUT = GuGuUtils.MODID + ":" + NAME_AURAHATCH_INPUT;
 
+    public static final String NAME_AURAHATCH_OUTPUT = "auraoutputhatch";
+    public static final ResourceLocation RESOURCE_AURAHATCH_OUTPUT = new ResourceLocation(GuGuUtils.MODID, NAME_AURAHATCH_OUTPUT);
+    public static final String STRING_RESOURCE_AURAHATCH_OUTPUT = GuGuUtils.MODID + ":" + NAME_AURAHATCH_OUTPUT;
+
     public static final String NAME_ENERGYPORT_OUTPUT = "energyoutputport";
     public static final ResourceLocation RESOURCE_ENERGYPORT_OUTPUT = new ResourceLocation(GuGuUtils.MODID, NAME_ENERGYPORT_OUTPUT);
     public static final String STRING_RESOURCE_ENERGYPORT_OUTPUT = GuGuUtils.MODID + ":" + NAME_ENERGYPORT_OUTPUT;

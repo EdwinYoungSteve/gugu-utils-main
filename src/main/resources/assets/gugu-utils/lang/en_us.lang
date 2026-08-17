@@ -27,6 +27,7 @@ tile.gugu-utils.emberinputhatch.extreme.name=Extreme Ember Input Hatch
 
 tile.gugu-utils.environmenthatch.name=Environment Sensor
 tile.gugu-utils.aurainputhatch.name=Aura Input Hatch
+tile.gugu-utils.auraoutputhatch.name=Aura Output Hatch
 tile.gugu-utils.energyoutputport.name=Energy Output Port
 tile.gugu-utils.aspecthatch.input.name=Aspect Input Hatch
 tile.gugu-utils.aspecthatch.output.name=Aspect Output Hatch
@@ -93,6 +94,7 @@ component.missing.gugu-utils:mana.output=No Mana Output Hatch found!
 component.missing.gugu-utils:starlight.input=No Starlight Input Hatch found!
 component.missing.gugu-utils:environment.input=No Environment Sensor found!
 component.missing.gugu-utils:aura.input=No Aura Input Hatch found!
+component.missing.gugu-utils:aura.output=No Aura Output Hatch found!
 component.missing.gugu-utils:pressurehatch.input=No Compressed Air Input Valve found!
 component.missing.gugu-utils:pressurehatch.output=No Compressed Air Output Valve found!
 
@@ -102,6 +104,7 @@ craftcheck.failure.gugu-utils:starlight.input=Missing starlight input!
 craftcheck.failure.gugu-utils:starlight.input.wrong_constellation=Starlight did not belong to the correct constellation!
 craftcheck.failure.gugu-utils:ember.input=Missing ember input!
 craftcheck.failure.gugu-utils:aura.input=Missing aura input!
+craftcheck.failure.gugu-utils:aura.output.space=Not enough space for aura output!
 craftcheck.failure.gugu-utils:compressed_air.input=Missing compressed air input!
 craftcheck.failure.gugu-utils:compressed_air.input.not_enough_pressure=Not enough pressure!
 craftcheck.failure.gugu-utils:compressed_air.input.not_enough_vacuum=Not enough vacuum!

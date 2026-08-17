@@ -6,7 +6,9 @@ import com.warmthdawn.mod.gugu_utils.modularmachenary.ColorableTileCompat;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.aspect.BlockAspectHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.aspect.TileAspectHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.aura.BlockAuraInputHatch;
+import com.warmthdawn.mod.gugu_utils.modularmachenary.aura.BlockAuraOutputHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.aura.TileAuraInputHatch;
+import com.warmthdawn.mod.gugu_utils.modularmachenary.aura.TileAuraOutputHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.embers.BlockEmberInputHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.embers.TileEmberInputHatch;
 import com.warmthdawn.mod.gugu_utils.modularmachenary.environment.BlockEnvironmentHatch;
@@ -55,6 +57,9 @@ public class ModBlocks {
     //灵气输入仓
     @GameRegistry.ObjectHolder(STRING_RESOURCE_AURAHATCH_INPUT)
     public static GenericBlock blockAuraInputHatch;
+    //灵气输出仓
+    @GameRegistry.ObjectHolder(STRING_RESOURCE_AURAHATCH_OUTPUT)
+    public static GenericBlock blockAuraOutputHatch;
     //能量输出端口
     @GameRegistry.ObjectHolder(STRING_RESOURCE_ENERGYPORT_OUTPUT)
     public static GenericBlock blockEnergyOutputPort;
@@ -93,8 +98,10 @@ public class ModBlocks {
                 blockStarightInputHatch.initModel();
             if (Enables.EMBERS)
                 blockEmberInputHatch.initModel();
-            if (Enables.NATURES_AURA)
+            if (Enables.NATURES_AURA) {
                 blockAuraInputHatch.initModel();
+                blockAuraOutputHatch.initModel();
+            }
             if(Enables.THAUMCRAFT)
                 blockAspectHatch.initModel();
             if(Enables.PNEUMATICCRAFT)
@@ -132,6 +139,8 @@ public class ModBlocks {
             if (Enables.NATURES_AURA) {
                 registry.register(new BlockAuraInputHatch());
                 GameRegistry.registerTileEntity(TileAuraInputHatch.class, RESOURCE_AURAHATCH_INPUT);
+                registry.register(new BlockAuraOutputHatch());
+                GameRegistry.registerTileEntity(TileAuraOutputHatch.class, RESOURCE_AURAHATCH_OUTPUT);
             }
 
             if(Enables.THAUMCRAFT){
@@ -205,6 +214,8 @@ public class ModBlocks {
         if (Enables.NATURES_AURA) {
             blockColors.registerBlockColorHandler(mmBlockColorMultiplier, blockAuraInputHatch);
             itemColors.registerItemColorHandler(mmItemColorMultiplier, Item.getItemFromBlock(blockAuraInputHatch));
+            blockColors.registerBlockColorHandler(mmBlockColorMultiplier, blockAuraOutputHatch);
+            itemColors.registerItemColorHandler(mmItemColorMultiplier, Item.getItemFromBlock(blockAuraOutputHatch));
         }
         if (Enables.THAUMCRAFT) {
             blockColors.registerBlockColorHandler(mmBlockColorMultiplier, blockAspectHatch);
