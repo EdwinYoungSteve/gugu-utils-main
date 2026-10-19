@@ -265,13 +265,16 @@ public class TileStarlightInputHatch extends TileReceiverBase implements IColora
 
     @Override
     public boolean consume(RequirementStarlight.RT outputToken, boolean doOperation) {
-        if (doOperation) {
-            setConsuming(true);
-        }
+        // The same token is tried against every matching hatch. Do not let a
+        // previous hatch's constellation mismatch leak into the next check.
+        outputToken.setError(null);
         lastRequirement = outputToken.getStarlight();
         if (outputToken.getConstellation() != null && !outputToken.getConstellation().equals(this.getFocusedConstellation())) {
             outputToken.setError("craftcheck.failure.gugu-utils:starlight.input.wrong_constellation");
             return false;
+        }
+        if (doOperation) {
+            setConsuming(true);
         }
         if (outputToken.getStarlight() <= this.getStarlightStored()) {
             outputToken.setStarlight(0);
