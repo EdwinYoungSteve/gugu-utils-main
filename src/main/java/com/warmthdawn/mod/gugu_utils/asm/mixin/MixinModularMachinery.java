@@ -20,7 +20,6 @@ public class MixinModularMachinery {
         // 使用兼容性适配器处理原版和MMCE的接口差异
         if (ColorableTileCompat.isColorable(te)) {
             ColorableTileCompat.setMachineColor(te, color);
-            thisObj.getWorld().addBlockEvent(pos, thisObj.getWorld().getBlockState(pos).getBlock(), 1, 1);
         }
     }
 
